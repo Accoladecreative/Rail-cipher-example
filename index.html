@@ -4,14 +4,31 @@
   <title>Rail Fence Cipher</title>
   <!-- Include Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+    .marquee {
+      width: 100%;
+      margin: 0 auto;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+      animation: marquee 10s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
 </head>
 <body>
   <div class="container mt-5">
+  
+
     <div class="row">
       <div class="col-lg-6 mx-auto">
         <form>
         <div class="container mt-5">
-    <h3 class="text-center">Rail Cipher</h3>
+    <h3 class="text-center">Rail Fence Cipher</h3>
   </div>
           <div class="form-group">
             <label for="words">Words:</label>
@@ -41,7 +58,37 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
   <script>
-    function encrypt() {
+  
+  function encrypt() {
+ plaintext = document
+  .getElementById("words")
+  .value.toLowerCase()
+  .replace(/[^a-z]/g, "");
+ if (plaintext.length < 1) {
+  alert("please enter some plaintext");
+  return;
+ }
+ var key = parseInt(document.getElementById("rails").value);
+ if (key > Math.floor(2 * (plaintext.length - 1))) {
+  alert("key is too large for the plaintext length.");
+  return;
+ }
+ ciphertext = "";
+ for (line = 0; line < key - 1; line++) {
+  skip = 2 * (key - line - 1);
+  j = 0;
+  for (i = line; i < plaintext.length; ) {
+   ciphertext += plaintext.charAt(i);
+   if (line == 0 || j % 2 == 0) i += skip;
+   else i += 2 * (key - 1) - skip;
+   j++;
+  }
+ }
+ for (i = line; i < plaintext.length; i += 2 * (key - 1))
+  ciphertext += plaintext.charAt(i);
+ document.getElementById("output").value = ciphertext;
+}
+    function encrypt2() {
       var words = document.getElementById("words").value;
       var rails = parseInt(document.getElementById("rails").value);
       var encryptedMessage = railFenceEncrypt(words, rails);
